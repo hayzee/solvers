@@ -1,14 +1,14 @@
 # solvers
 
-A Clojure library designed to ... well, that part is up to you.
+Backtracking solvers - suitable for solving problems like Sudoku and Towers of Hannoi - or any other type of problem that is suitable for a backtracking solution.
 
 ## Usage
 
-FIXME
+See examples for usage
 
 ## License
 
-Copyright © 2021 FIXME
+Copyright © 2021 Hayzee
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
