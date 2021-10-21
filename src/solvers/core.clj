@@ -38,8 +38,10 @@
                 ns (h-solver (f-apmv st mv) tg? term? f-mv f-apmv)]
             (cons mv ns))))
 
+
 (defn product
   "Cross product of lists"
   ([s1 s2] (for [x s1 y s2] [x y]))
   ([s1 s2 & r] (map #(apply conj %) (apply product (cons (product s1 s2) r)))))
+
 

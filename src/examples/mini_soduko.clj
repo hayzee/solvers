@@ -1,36 +1,72 @@
 (ns examples.mini-soduko)
 
-(comment
+;; todo: Still a W.I.P. !!!!!
 
-;(defrecord coord [row col])
+;; A micro-suko board is a 3x3 board where each position can be an integer from 1..3.
+;;
+;; In a solved state it looks like this, but note that this isn't the only valid arrangement:
+;;
+;; [[1 2 3]
+;;  [3 1 2]
+;;  [2 3 1]]
+;;
+;; That is, all columns contain every number 1 .. 3 and all rows contain every number 1 .. 3
+;
+;; Thus:
+;;
+;; [[1 3 2]
+;;  [3 1 2]
+;;  [2 3 1]]
+;;
+;; Is in an invalid state because columns 2 and 3 contain repeats
+;;
+;;
 
-(def st [[1 2 nil]
-         [3 99 nil]
-         [nil 888 999]])
+(defn size
+  ; The size of a board is the count of its rows.
+  [st]
+  (count st))
 
-(update-in st [2 0] (constantly 6))
+(defn rows
+  ; Can just return the board for this as it is oriented by rows anyway
+  [st]
+  st)
 
-(defn moves [s]
-  (for [x (range 3)
-        y (range 3)
-        :let [coord [x y]]
-        :when (not (get-in st coord))]
-    coord))
+(defn cols
+  ; Return each column
+  [st]
+  (apply map vector st))
 
-(moves st)
+(defn term?
+  ; If all rows are filled, then there are no more moves and this is a terminal state!
+  [st]
+  (->>
+    (map #(count (remove nil? %)) (rows st))
+    (every? #(= (size st) %))))
 
-(defn app-moves [st moves]
-  (map #(update-in st [2 0] (constantly 6))
-    ))
+(defn tg?
+  ;; Is all rows and all columns add up to 9
+  [st]
+  (and
+    (term? st)
+    (= 9 (reduce + (map #(count (distinct %)) (rows st))))
+    (= 9 (reduce + (map #(count (distinct %)) (cols st))))))
+
+(defn find-empties [st]
+  (for [r (range size)
+        c (range size)
+        :when (= (get-in st [r c]) nil)
+        ]
+    [r c]))
 
 
-  (slv/product ["this" "is" "a" "sentence"] ["and" "also" "qualifies" "as" "well"])
+(defn gen-moves [st]
+  (for [e (find-empties st)
+        n (range 1 (inc size))
+        ]
+    [e n]))
 
-  (def allwords (slurp "https://raw.githubusercontent.com/dwyl/english-words/master/words.txt"))
+(defn apply-move [st [[r c] v]]
+  (assoc-in st [r c] v))
 
 
-  (def allwords2 (filter #(not= \newline %) (partition-by #(= % \newline) allwords)))
-
-  (take 1000 (drop 1000 allwords2))
-
-  )
