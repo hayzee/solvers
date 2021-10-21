@@ -18,7 +18,7 @@
 ;;  [3 1 2]
 ;;  [2 3 1]]
 ;;
-;; Is in an invalid state because columns 2 and 3 contain repeats
+;; ... is in an invalid state because columns 2 and 3 contain repeats
 ;;
 ;;
 
@@ -45,12 +45,15 @@
     (every? #(= (size st) %))))
 
 (defn tg?
-  ;; Is all rows and all columns add up to 9
+  ;; If all rows and all columns add up to 9, then it's target state
   [st]
   (and
     (term? st)
-    (= 9 (reduce + (map #(count (distinct %)) (rows st))))
-    (= 9 (reduce + (map #(count (distinct %)) (cols st))))))
+    (= 6 (reduce + (map #(count (distinct %)) (rows st))))
+    (= 6 (reduce + (map #(count (distinct %)) (cols st))))))
+
+
+
 
 (defn find-empties [st]
   (for [r (range size)

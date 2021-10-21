@@ -39,29 +39,27 @@
 (deftest term?-test
   (is (= false (term? unsolved-state)) "An unsolved state cannot be in a terminal state")
   (is (= true (term? solved-state)) "An solved state must be in a terminal state")
-  (is (= true (term? failed-state)) "A failed state must be in a terminal state")
-  )
+  (is (= true (term? failed-state)) "A failed state must be in a terminal state"))
 
 
+(deftest tg?-test
+  (is (= false (tg? unsolved-state)) "An unsolved state cannot be in a target state")
+  (is (= true (tg? solved-state)) "An solved state must be in the target state")
+  (is (= false (tg? failed-state)) "A failed state cannot be in a target state"))
 
 
 
 (comment
 
-
-
-
   (tg? unsolved-state)
   (tg? solved-state)
   (tg? failed-state)
-
 
   ;test
   (find-empties st)
 
   ; test f-mv
   (gen-moves st)
-
 
   ;test
   (apply-move st [[0 2] :ok])
@@ -71,4 +69,5 @@
   (map #(apply-move st %) (gen-moves st))
 
   )
+
 
