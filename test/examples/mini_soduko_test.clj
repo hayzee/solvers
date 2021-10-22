@@ -11,12 +11,12 @@
    [3 1 2]
    [2 3 1]])
 
-(def unsolved-state
+(def unsolved-state  ; not terminal
   [[1 2 nil]
    [nil 1 nil]
    [nil 3 1]])
 
-(def failed-state
+(def failed-state    ; i.e. an invalid terminal state
   [[1 2 1]
    [3 1 2]
    [2 3 1]])

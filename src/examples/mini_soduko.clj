@@ -47,12 +47,7 @@
 (defn tg?
   ;; If all rows and all columns add up to 9, then it's target state
   [st]
-  (and
-    (term? st)
-    (= 6 (reduce + (map #(count (distinct %)) (rows st))))
-    (= 6 (reduce + (map #(count (distinct %)) (cols st))))))
-
-
+  (= {1 6, 2 6, 3 6} (frequencies (flatten (list (rows st) (cols st))))))
 
 
 (defn find-empties [st]
