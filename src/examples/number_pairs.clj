@@ -6,8 +6,9 @@
 
 (defn number-pairs []
   (slv/solver
-    []
-    #(and (= (count %) 2) (= (reduce + %) 13))
-    #(= (count %) 2)
-    (fn [_] (range 10))
-    #(conj %1 %2)))
+    []                                              ; st     => empty vector
+    #(and (= (count %) 2) (= (reduce + %) 13))      ; tg?    => state has 2 digits and they sum to 13
+    #(= (count %) 2)                                ; term?  => state has 2 digits
+    (fn [_] (range 10))                             ; f-mv   => a list of all digits
+    #(conj %1 %2)                                   ; f-apmv => conj a digit to a state
+    ))

@@ -2,29 +2,22 @@
   (:require [clojure.test :refer :all])
   (:require [examples.mini-soduko :refer :all]))
 
-;; todo: Still a W.I.P. !!!!!
-
 ; setup
 
-(def solved-state    ; goal state, valid solution
+(def solved-state                                           ; goal state, valid solution
   [[1 2 3]
    [3 1 2]
    [2 3 1]])
 
-(def unsolved-state  ; not terminal
+(def unsolved-state                                         ; not terminal
   [[1 2 nil]
    [nil 1 nil]
    [nil 3 1]])
 
-(def failed-state    ; i.e. an invalid terminal state (duplicate in col 3)
+(def failed-state                                           ; i.e. an invalid terminal state (duplicate in col 3)
   [[1 2 1]
    [3 1 2]
    [2 3 1]])
-
-(def test-state    ; i.e. not a valid state but useful for test
-  [[1 2 3]
-   [4 5 6]
-   [7 8 9]])
 
 ; tests
 
@@ -38,34 +31,10 @@
           [2 3 1]] (rows solved-state))))
 
 
-(deftest row-test
-  (is (= [1 2 3] (row solved-state 0)))
-  (is (= [3 1 2] (row solved-state 1)))
-  (is (= [2 3 1] (row solved-state 2))))
-
-
 (deftest cols-test
   (is (= [[1 3 2]
           [2 1 3]
           [3 2 1]] (cols solved-state))))
-
-
-(deftest col-test
-  (is (= [1 3 2] (col solved-state 0)))
-  (is (= [2 1 3] (col solved-state 1)))
-  (is (= [3 2 1] (col solved-state 2))))
-
-
-(deftest row-col-vals-test
-  (is (= #{1 2 3} (row-col-vals solved-state [0 0])))
-  (is (= #{1 2 3} (row-col-vals solved-state [0 1])))
-  (is (= #{1 2 3} (row-col-vals solved-state [0 2])))
-  (is (= #{1 2 3} (row-col-vals solved-state [1 0])))
-  (is (= #{1 2 3} (row-col-vals solved-state [1 1])))
-  (is (= #{1 2 3} (row-col-vals solved-state [1 2])))
-  (is (= #{1 2 3} (row-col-vals solved-state [2 0])))
-  (is (= #{1 2 3} (row-col-vals solved-state [2 1])))
-  (is (= #{1 2 3} (row-col-vals solved-state [2 2]))))
 
 
 (deftest find-empties-test
@@ -75,10 +44,10 @@
   (is (= (find-empties unsolved-state) '([0 2] [1 0] [1 2] [2 0])) "Unsolved state should generate specific set of empties"))
 
 
-(deftest term?-test
-  (is (= false (term? unsolved-state)) "An unsolved state cannot be in a terminal state")
-  (is (= true (term? solved-state)) "An solved state must be in a terminal state")
-  (is (= true (term? failed-state)) "A failed state must be in a terminal state"))
+(deftest first-empty-test
+  (is (= (list [0 2]) (first-empty unsolved-state)))
+  (is (= (list) (first-empty solved-state)) "There is no first empty space in a solved state")
+  (is (= (list) (first-empty failed-state))) "There is no first empty space in an unsolved state")
 
 
 (deftest tg?-test
@@ -87,23 +56,45 @@
   (is (= false (tg? failed-state)) "A failed state cannot be in a target state"))
 
 
-(comment
+(deftest term?-test
+  (is (= false (term? unsolved-state)) "An unsolved state cannot be in a terminal state")
+  (is (= true (term? solved-state)) "An solved state must be in a terminal state")
+  (is (= true (term? failed-state)) "A failed state must be in a terminal state"))
 
-  (tg? unsolved-state)
-  (tg? solved-state)
-  (tg? failed-state)
 
-  ;test
-  (find-empties st)
+(deftest f-mv-test
+  (is (= (list [[0 2] 1] [[0 2] 2] [[0 2] 3]) (f-mv unsolved-state)) "All moves for an unsolved state is all possible entries in the first empty slot")
+  (is (= (list) (f-mv solved-state)) "There are no moves for an unsolved state")
+  (is (= (list) (f-mv failed-state)) "There are no moves for a failed state"))
 
-  ; test f-mv
-  (gen-moves st)
+(deftest f-apmv-test
+  (is (= [[1 2 1] [nil 1 nil] [nil 3 1]] (f-apmv unsolved-state [[0 2] 1])))
+  (is (= [[1 2 2] [nil 1 nil] [nil 3 1]] (f-apmv unsolved-state [[0 2] 2])))
+  (is (= [[1 2 3] [nil 1 nil] [nil 3 1]] (f-apmv unsolved-state [[0 2] 3]))))
 
-  ;test
-  (apply-move st [[0 2] :ok])
-  (apply-move st [[1 0] :ok])
-  (apply-move st [[2 1] :ok])
 
-  (map #(apply-move st %) (gen-moves st))
+(deftest solve-test
+  (is (= #{[[1 2 3]
+            [3 1 2]
+            [2 3 1]]}
+         (set (solve unsolved-state))) "The unsolved-state has 1, and only 1, solution")
+
+  (is (= #{[[1 2 3]
+            [3 1 2]
+            [2 3 1]]
+
+           [[1 3 2]
+            [2 1 3]
+            [3 2 1]]}
+
+         (set (solve [[1 nil nil]
+                      [nil 1 nil]
+                      [nil nil 1]]))) "The identity matrix has 2 solutions - which sounds clever, but isn't really")
+
+  (is (= #{}
+
+         (set (solve [[  1 nil nil]
+                      [nil   2   3]
+                      [  3 nil nil]]))) "An unsolvable solution has no solutions!!")
 
   )
