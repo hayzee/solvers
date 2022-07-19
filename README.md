@@ -1,4 +1,4 @@
-# solvers
+# solvers (W.I.P.)
 
 Backtracking solvers - suitable for solving problems like Sudoku and Towers of Hannoi - or any other type of problem that is suitable for a backtracking solution.
 
